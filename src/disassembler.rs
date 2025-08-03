@@ -110,7 +110,7 @@ pub fn disassemble(binary_data: &[u8]) -> Vec<String> {
                 if pc + 1 < binary_data.len() {
                     let addr_high = binary_data[pc] as u16;
                     let addr_low = binary_data[pc + 1] as u16;
-                    let address = (addr_high << 7) | addr_low;
+                    let address = (addr_high << 8) | addr_low;
                     instruction.push_str(&format!(" {:#x}", address));
                     pc += 2;
                 }
@@ -147,6 +147,7 @@ pub fn disassemble(binary_data: &[u8]) -> Vec<String> {
 
 // Helper function to determine if an instruction has an immediate operand
 // This is a simplified heuristic - might need refinement based on actual usage
+// TODO: Rewrite this horrible mess of a function (thx claude)
 fn has_immediate_operand(binary_data: &[u8], pc: usize) -> bool {
     if pc + 1 >= binary_data.len() {
         return false;
