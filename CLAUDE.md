@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a Rust-based assembler and disassembler for the Carbon1.1 architecture, a custom 8-bit instruction set. The assembler supports bidirectional assembly/disassembly with a complete toolchain pipeline.
 
-Here is a spreadsheet link with ISA overview: https://docs.google.com/spreadsheets/d/1bVyzKowPuGPJvM52qPVt7oWb5SRoTdGl3UMWWx72ZJE/edit?gid=1735698560#gid=1735698560
+Carbon 1.1 ISA is the README.md.
 
 ## Development Commands
 
