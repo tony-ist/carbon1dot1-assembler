@@ -42,7 +42,7 @@ Branch and call instructions use three bytes:
 |--------|-------------|---------|---------|---------|
 | **1-byte** | Most instructions | `opcode + operand` | - | - |
 | **2-byte** | LIM, PSI | `opcode + operand` | `immediate` | - |
-| **3-byte** | BRC, CAL | `opcode + operand` | `page_addr` | `page_offset` |
+| **3-byte** | BRC, ~~CAL~~, ~~PRD~~ | `opcode + operand` | `page_addr` | `page_offset` |
 
 ## Complete Instruction Set
 
@@ -84,10 +84,10 @@ Branch and call instructions use three bytes:
 ### Control Flow Instructions
 | Mnemonic | Opcode | Binary | Bytes | Description | Flags Updated |
 |----------|---------|---------|--------|-------------|---------------|
-| CAL | 20 | 10100 | 3 | Call function (stack.push(pc+3); pc = address) | No |
-| RET | 21 | 10101 | 1 | Return from function (pc = stack.pop) | No |
+| CAL | 20 | 10100 | 3 | **[NOT IMPLEMENTED]** Call function | No |
+| RET | 21 | 10101 | 1 | **[NOT IMPLEMENTED]** Return from function | No |
 | BRC | 22 | 10110 | 3 | Branch on condition to page:offset | No |
-| JID | 23 | 10111 | 1 | Jump Indirect (pc = reg[x]) | No |
+| JID | 23 | 10111 | 1 | **[NOT IMPLEMENTED]** Jump Indirect | No |
 
 ### Stack Instructions
 | Mnemonic | Opcode | Binary | Bytes | Description | Flags Updated |
@@ -101,7 +101,7 @@ Branch and call instructions use three bytes:
 | PST | 26 | 11010 | 1 | Store accumulator to port (PORTS[x] = acc) | No |
 | PSI | 27 | 11011 | 2 | Store immediate to port (PORTS[x] = IMM) | No |
 | PLD | 28 | 11100 | 1 | Load from port to accumulator (acc = PORTS[x]) | Yes |
-| PRD | 29 | 11101 | 1 | Predicate: disable next instruction if condition false | No |
+| PRD | 29 | 11101 | 3 | **[NOT IMPLEMENTED]** Predicate: disable next instruction if condition false | No |
 
 ### System Instructions
 | Mnemonic | Opcode | Binary | Bytes | Description | Flags Updated |
@@ -144,6 +144,7 @@ The following instructions update processor flags:
 - **Harvard Architecture**: Separate instruction and data memory spaces
 - **Pipeline**: 5-stage pipeline (Fetch, Decode, Read, Execute, Writeback)
 - **Opcode 14** is not used
+- **⚠️ NOT IMPLEMENTED**: Instructions CAL, RET, JID, and PRD are defined in the ISA but not implemented in the actual CPU hardware. Do not use these instructions in programs intended to run on the physical processor.
 
 ## Multi-Byte Instruction Details
 
@@ -151,12 +152,6 @@ The following instructions update processor flags:
 The BRC instruction is always 3 bytes:
 - **Byte 1**: Instruction opcode (10110) + 3-bit condition code
 - **Byte 2**: Page address (8-bit)  
-- **Byte 3**: Address within the page (8-bit)
-
-### CAL (Call) Instruction Format  
-The CAL instruction is always 3 bytes:
-- **Byte 1**: Instruction opcode (10100) + 000 (reserved)
-- **Byte 2**: Page address (8-bit)
 - **Byte 3**: Address within the page (8-bit)
 
 ### 2-Byte Instructions
@@ -178,7 +173,6 @@ The CAL instruction is always 3 bytes:
 
 ### 3-Byte Instructions
 - `BRC EQ, 0x1234` → `0xB2 0x12 0x34` (opcode 22 << 3 + condition 2, page, offset)
-- `CAL .function` → `0xA0 0x12 0x34` (opcode 20 << 3 + 0, page, offset)
 
 ## Address Space
 
