@@ -1,3 +1,4 @@
 /target
 examples/*.schem
 .claude/settings.local.json
+claude-docs/
