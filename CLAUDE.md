@@ -19,9 +19,6 @@ cargo test
 
 # Assembly mode - convert .s files to binary
 cargo run -- input.s -o output.bin
-
-# Disassembly mode - convert binary back to assembly
-cargo run -- input.bin -d
 ```
 
 ## Architecture Pipeline
@@ -32,7 +29,6 @@ The assembler follows a multi-stage compilation pipeline:
 2. **Name Mangling** (`name_mangling.rs`) - Function and label name processing  
 3. **Label Lowering** (`lower_labels.rs`) - Convert labels to memory addresses
 4. **Assembly** (`assembler.rs`) - Generate 8-bit binary machine code
-5. **Disassembly** (`disassembler.rs`) - Convert binary back to assembly
 
 ## Key Source Organization
 
@@ -40,7 +36,6 @@ The assembler follows a multi-stage compilation pipeline:
 - `src/ast.rs` - Abstract syntax tree definitions for all instruction types
 - `src/main.rs` - CLI interface using clap
 - `examples/` - Complete sample programs including Fibonacci, Collatz, bit shifting tests
-- `tests/` - Comprehensive test suites for all pipeline stages
 
 ## Carbon1.1 ISA
 
@@ -57,11 +52,3 @@ The custom instruction set includes ~32 opcodes across categories:
 - Uses LALRPOP build script (`build.rs`) to generate parser from grammar
 - Parser regeneration happens automatically on grammar changes
 - Binary output format is 8-bit instruction encoding written as binary strings
-
-## Testing Strategy
-
-Tests are organized by pipeline stage:
-- `parser_tests.rs` - Grammar and AST generation
-- `disassembler_tests.rs` - Binary to assembly conversion
-- `examples_tests.rs` - End-to-end assembly/disassembly round-trips
-- `integration_tests.rs` - Full pipeline validation
