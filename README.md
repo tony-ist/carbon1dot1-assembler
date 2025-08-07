@@ -23,6 +23,8 @@ Most instructions use a single byte with the format:
 - **Bits 7-3**: 5-bit opcode
 - **Bits 2-0**: 3-bit operand (register, condition, or immediate)
 
+**Note**: BSL and BSR instructions encode the shift amount (0-7) directly in the 3-bit operand field.
+
 ### 2-Byte Instructions
 Instructions with immediate values use two bytes:
 - **Byte 1**: `[opcode(5-bit) + operand(3-bit)]`
@@ -67,8 +69,8 @@ Branch and call instructions use three bytes:
 | BOR | 9 | 01001 | 1 | Bitwise OR with register | Yes |
 | AND | 10 | 01010 | 1 | Bitwise AND with register | Yes |
 | XOR | 11 | 01011 | 1 | Bitwise XOR with register | Yes |
-| BSL | 12 | 01100 | 1 | Barrel Shift Left by immediate | Yes |
-| BSR | 13 | 01101 | 1 | Barrel Shift Right by immediate | Yes |
+| BSL | 12 | 01100 | 1 | Barrel Shift Left accumulator by 0-7 bits | Yes |
+| BSR | 13 | 01101 | 1 | Barrel Shift Right accumulator by 0-7 bits | Yes |
 
 ### Memory & Register Instructions
 | Mnemonic | Opcode | Binary | Bytes | Description | Flags Updated |
@@ -166,6 +168,8 @@ The CAL instruction is always 3 bytes:
 ### 1-Byte Instructions
 - `NOP` → `0x00` (opcode 0 << 3 + 0)
 - `INC R1` → `0x09` (opcode 1 << 3 + register 1)
+- `BSL 3` → `0x63` (opcode 12 << 3 + shift_amount 3)
+- `BSR 5` → `0x6D` (opcode 13 << 3 + shift_amount 5)
 - `PSH` → `0xC0` (opcode 24 << 3 + 0)
 
 ### 2-Byte Instructions
