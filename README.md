@@ -56,38 +56,38 @@ Branch and call instructions use three bytes:
 |----------|---------|---------|--------|-------------|---------------|
 | INC | 1 | 00001 | 1 | Increment register | Yes |
 | DEC | 2 | 00010 | 1 | Decrement register | Yes |
-| ADD | 3 | 00011 | 1 | Add register to accumulator | Yes |
-| ADR | 4 | 00100 | 1 | Add to Registers | Yes |
-| NEG | 5 | 00101 | 1 | Negate register | Yes |
-| SUB | 6 | 00110 | 1 | Subtract register from accumulator | Yes |
-| BSB | 7 | 00111 | 1 | Backwards Subtraction | Yes |
-| CMP | 8 | 01000 | 1 | Compare accumulator with register | Yes |
+| ADD | 3 | 00011 | 1 | Add register to accumulator (acc += reg[x]) | Yes |
+| ADR | 4 | 00100 | 1 | Add accumulator to register (reg[x] += acc) | Yes |
+| NEG | 5 | 00101 | 1 | Bitwise NOT register (reg[x] = ~reg[x]) | Yes |
+| SUB | 6 | 00110 | 1 | Subtract register from accumulator (acc -= reg[x]) | Yes |
+| BSB | 7 | 00111 | 1 | Backwards subtraction (acc = reg[x] - acc) | Yes |
+| CMP | 8 | 01000 | 1 | Compare accumulator with register (FLAGS = acc - reg[x]) | Yes |
 
 ### Logic Instructions  
 | Mnemonic | Opcode | Binary | Bytes | Description | Flags Updated |
 |----------|---------|---------|--------|-------------|---------------|
-| BOR | 9 | 01001 | 1 | Bitwise OR with register | Yes |
-| AND | 10 | 01010 | 1 | Bitwise AND with register | Yes |
-| XOR | 11 | 01011 | 1 | Bitwise XOR with register | Yes |
+| BOR | 9 | 01001 | 1 | Bitwise OR with register (acc = acc OR reg[x]) | Yes |
+| AND | 10 | 01010 | 1 | Bitwise AND with register (acc = acc AND reg[x]) | Yes |
+| XOR | 11 | 01011 | 1 | Bitwise XOR with register (acc = acc XOR reg[x]) | Yes |
 | BSL | 12 | 01100 | 1 | Barrel Shift Left accumulator by 0-7 bits | Yes |
 | BSR | 13 | 01101 | 1 | Barrel Shift Right accumulator by 0-7 bits | Yes |
 
 ### Memory & Register Instructions
 | Mnemonic | Opcode | Binary | Bytes | Description | Flags Updated |
 |----------|---------|---------|--------|-------------|---------------|
-| LIM | 15 | 01111 | 2 | Load Immediate to register | No |
-| RST | 16 | 10000 | 1 | Register Store (acc → register) | No |
-| RLD | 17 | 10001 | 1 | Register Load (register → acc) | No |
-| MST | 18 | 10010 | 1 | Memory Store | No |
-| MLD | 19 | 10011 | 1 | Memory Load | No |
+| LIM | 15 | 01111 | 2 | Load Immediate (reg[x] = IMM; acc = IMM if x=0) | No |
+| RST | 16 | 10000 | 1 | Register Store (reg[x] = acc) | No |
+| RLD | 17 | 10001 | 1 | Register Load (acc = reg[x]) | No |
+| MST | 18 | 10010 | 1 | Memory Store (mem[reg[x]] = acc) | No |
+| MLD | 19 | 10011 | 1 | Memory Load (acc = mem[reg[x]]) | No |
 
 ### Control Flow Instructions
 | Mnemonic | Opcode | Binary | Bytes | Description | Flags Updated |
 |----------|---------|---------|--------|-------------|---------------|
-| CAL | 20 | 10100 | 3 | Call function | No |
-| RET | 21 | 10101 | 1 | Return from function | No |
-| BRC | 22 | 10110 | 3 | Branch on condition | No |
-| JID | 23 | 10111 | 1 | Jump Indirect | No |
+| CAL | 20 | 10100 | 3 | Call function (stack.push(pc+3); pc = address) | No |
+| RET | 21 | 10101 | 1 | Return from function (pc = stack.pop) | No |
+| BRC | 22 | 10110 | 3 | Branch on condition to page:offset | No |
+| JID | 23 | 10111 | 1 | Jump Indirect (pc = reg[x]) | No |
 
 ### Stack Instructions
 | Mnemonic | Opcode | Binary | Bytes | Description | Flags Updated |
@@ -98,10 +98,10 @@ Branch and call instructions use three bytes:
 ### I/O Port Instructions
 | Mnemonic | Opcode | Binary | Bytes | Description | Flags Updated |
 |----------|---------|---------|--------|-------------|---------------|
-| PST | 26 | 11010 | 1 | Store accumulator to port | No |
-| PSI | 27 | 11011 | 2 | Store immediate to port | No |
-| PLD | 28 | 11100 | 1 | Load from port to accumulator | Yes |
-| PRD | 29 | 11101 | 1 | Predicate (conditional execution) | No |
+| PST | 26 | 11010 | 1 | Store accumulator to port (PORTS[x] = acc) | No |
+| PSI | 27 | 11011 | 2 | Store immediate to port (PORTS[x] = IMM) | No |
+| PLD | 28 | 11100 | 1 | Load from port to accumulator (acc = PORTS[x]) | Yes |
+| PRD | 29 | 11101 | 1 | Predicate: disable next instruction if condition false | No |
 
 ### System Instructions
 | Mnemonic | Opcode | Binary | Bytes | Description | Flags Updated |
@@ -116,7 +116,7 @@ Branch and predicate instructions use 3-bit condition codes:
 | Condition | Code | Binary | Description |
 |-----------|------|---------|-------------|
 | JMP | 0 | 000 | Jump (Unconditional) |
-| EVEN | 1 | 001 | Even (Odd=lsb[0]) |
+| EVEN | 1 | 001 | Even (LSB = 0) |
 | EQ | 2 | 010 | Equal (A = B) |
 | NEQ | 3 | 011 | Not Equal (A ≠ B) |
 | GT | 4 | 100 | Greater Than (A > B) |
