@@ -37,7 +37,7 @@ pub enum Opcode {
 }
 
 #[repr(u8)]
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Condition {
     Jmp,
     Even,
@@ -49,7 +49,7 @@ pub enum Condition {
     Lteq,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Operand {
     Immediate(u8),
     Condition(Condition),
@@ -58,13 +58,13 @@ pub enum Operand {
     Address(u8),
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Instruction {
     pub opcode: Opcode,
     pub operands: Vec<Operand>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum FuncBody {
     Instruction(Instruction),
     Label(String),

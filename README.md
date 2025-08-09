@@ -26,7 +26,7 @@ Most instructions use a single byte with the format:
 **Note**: BSL and BSR instructions encode the shift amount (0-7) directly in the 3-bit operand field.
 
 ### 2-Byte Instructions
-Instructions with immediate values use two bytes:
+Some instructions with 8-bit immediate values use two bytes:
 - **Byte 1**: `[opcode(5-bit) + operand(3-bit)]`
 - **Byte 2**: `[immediate_value(8-bit)]`
 
