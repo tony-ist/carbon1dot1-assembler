@@ -15,8 +15,7 @@ struct Args {
 
 fn main() {
     let args = Args::parse();
-    
-    // Assembly mode: normal operation
+
     let text = std::fs::read_to_string(&args.input_file).expect("failed to read the input file");
     let ast = parse(&text, &args.input_file);
     let mangled = mangle(ast);
