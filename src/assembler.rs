@@ -32,7 +32,7 @@ pub fn assemble(instrs: Vec<FuncBody>) -> Vec<u8> {
                                         panic!("BRC address {:#06x} exceeds 32KiB addressable space (15-bit)", a);
                                     }
                                     ret.push((a >> 7) as u8);
-                                    ret.push((a & 0x7F) as u8);
+                                    ret.push((a & 0b01111111) as u8);
                                 }
                                 _ => {
                                     panic!("16-bit immediate only supported for BRC instruction");
