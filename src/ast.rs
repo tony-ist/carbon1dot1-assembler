@@ -51,7 +51,8 @@ pub enum Condition {
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Operand {
-    Immediate(u8),
+    Immediate(u8), // todo rename immediate8
+    Immediate16(u16),
     Condition(Condition),
     Label(String),
     Register(u8),
@@ -109,6 +110,7 @@ impl Display for Operand {
             Operand::Address(a) => write!(f, "${a}"),
             Operand::Condition(cond) => write!(f, "{cond}"),
             Operand::Immediate(i) => write!(f, "{:#x}", i),
+            Operand::Immediate16(i) => write!(f, "{:#x}", i),
             Operand::Register(r) => write!(f, "r{r}"),
             Operand::Label(l) => write!(f, "{l}"),
         }

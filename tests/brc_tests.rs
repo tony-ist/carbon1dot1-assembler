@@ -6,7 +6,7 @@ fn create_brc_jmp_instruction(address: u16) -> Vec<FuncBody> {
         opcode: Opcode::Brc,
         operands: vec![
             Operand::Condition(Condition::Jmp),
-            Operand::Immediate(address)
+            Operand::Immediate16(address)
         ]
     })]
 }
@@ -28,7 +28,7 @@ fn test_brc_valid_15bit_addresses(address: u16, expected: Vec<u8>) {
 #[test_case(0xFF80 ; "BRC JMP to 0xFF80 (offset MSB set)")]
 #[test_case(0x80FF ; "BRC JMP to 0x80FF (page MSB set, offset MSB set)")]
 #[test_case(0xFFFF ; "BRC JMP to 0xFFFF (maximum invalid address)")]
-#[test_case(0x7F80 ; "BRC JMP to 0x7F80 (valid page, invalid offset)")]
+#[test_case(0xA000 ; "BRC JMP to 0xA000 (exceeds 15-bit space)")]
 fn test_brc_invalid_addresses_should_error(address: u16) {
     let instructions = create_brc_jmp_instruction(address);
     

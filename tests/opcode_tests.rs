@@ -121,7 +121,7 @@ fn test_psi_instruction_encoding(port: u8, immediate: u8, expected: Vec<u8>) {
 fn test_branch_instruction_encoding(condition: Condition, address: u8, expected: Vec<u8>) {
     let instructions = create_instruction(
         Opcode::Brc,
-        vec![Operand::Condition(condition), Operand::Immediate(address)]
+        vec![Operand::Condition(condition), Operand::Immediate16(address as u16)]
     );
     let result = assemble(instructions);
     assert_eq!(result, expected);

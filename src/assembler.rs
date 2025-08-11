@@ -11,10 +11,6 @@ pub fn assemble(instrs: Vec<FuncBody>) -> Vec<u8> {
                     match operand {
                         Operand::Immediate(a) => {
                             match instr.opcode {
-                                Opcode::Brc => {
-                                    ret.push(a >> 7);
-                                    ret.push(a & 0b0111_1111);
-                                }
                                 Opcode::Bsl | Opcode::Bsr => {
                                     word |= a;
                                     pushed_opword = true;
@@ -26,6 +22,20 @@ pub fn assemble(instrs: Vec<FuncBody>) -> Vec<u8> {
                                     }
                                     pushed_opword = true;
                                     ret.push(a);
+                                }
+                            }
+                        }
+                        Operand::Immediate16(a) => {
+                            match instr.opcode {
+                                Opcode::Brc => {
+                                    if a > 0x7FFF {
+                                        panic!("BRC address {:#06x} exceeds 32KiB addressable space (15-bit)", a);
+                                    }
+                                    ret.push((a >> 7) as u8);
+                                    ret.push((a & 0x7F) as u8);
+                                }
+                                _ => {
+                                    panic!("16-bit immediate only supported for BRC instruction");
                                 }
                             }
                         }

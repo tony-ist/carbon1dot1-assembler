@@ -27,6 +27,10 @@ pub fn lower_labels(module: Vec<FuncBody>) -> Vec<FuncBody> {
                             // but only for non-BRC instructions
                             size += 1;
                         }
+                        Operand::Immediate16(_) => {
+                            // 16-bit immediates add 2 bytes (used by BRC)
+                            size += 2;
+                        }
                         Operand::Register(_) | Operand::Condition(_) | Operand::Address(_) => {
                             // These are encoded in the instruction word bits, no extra bytes
                         }
@@ -49,9 +53,15 @@ pub fn lower_labels(module: Vec<FuncBody>) -> Vec<FuncBody> {
                 let mut new_i = i.clone();
                 for operand in new_i.operands.iter_mut() {
                     if let Operand::Label(l) = operand {
-                        *operand = Operand::Immediate(
-                            *label_map.get(l).expect("used a label that doesn't exist"),
-                        );
+                        let addr = *label_map.get(l).expect("used a label that doesn't exist");
+                        match new_i.opcode {
+                            Opcode::Brc => {
+                                *operand = Operand::Immediate16(addr as u16);
+                            }
+                            _ => {
+                                *operand = Operand::Immediate(addr);
+                            }
+                        }
                     }
                 }
                 ret.push(FuncBody::Instruction(new_i));
