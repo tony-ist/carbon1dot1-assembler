@@ -22,7 +22,7 @@ pub fn lower_labels(module: Vec<FuncBody>) -> Vec<FuncBody> {
                 // Check if any operand requires additional bytes
                 for operand in &i.operands {
                     match operand {
-                        Operand::Immediate(_) | Operand::Label(_) => {
+                        Operand::Immediate8(_) | Operand::Label(_) => {
                             // Immediate values and labels (which become immediates) add 1 byte
                             // but only for non-BRC instructions
                             size += 1;
@@ -59,7 +59,7 @@ pub fn lower_labels(module: Vec<FuncBody>) -> Vec<FuncBody> {
                                 *operand = Operand::Immediate16(addr as u16);
                             }
                             _ => {
-                                *operand = Operand::Immediate(addr);
+                                *operand = Operand::Immediate8(addr);
                             }
                         }
                     }

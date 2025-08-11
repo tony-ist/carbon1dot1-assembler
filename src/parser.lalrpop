@@ -128,7 +128,7 @@ Register: Operand = {
 }
 
 Immediate: Operand = {
-    r"\d+" => Operand::Immediate(<>.parse::<u8>().unwrap())
+    r"\d+" => Operand::Immediate8(<>.parse::<u8>().unwrap())
 }
 
 Address: Operand = {

@@ -9,7 +9,7 @@ pub fn assemble(instrs: Vec<FuncBody>) -> Vec<u8> {
                 let mut pushed_opword = false;
                 for operand in instr.operands {
                     match operand {
-                        Operand::Immediate(a) => {
+                        Operand::Immediate8(a) => {
                             match instr.opcode {
                                 Opcode::Bsl | Opcode::Bsr => {
                                     word |= a;
