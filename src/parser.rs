@@ -1,4 +1,4 @@
-use codespan_reporting::diagnostic::Diagnostic;
+use codespan_reporting::{diagnostic::Diagnostic, files::SimpleFile, term::{self, termcolor::{ColorChoice, StandardStream}}};
 use lalrpop_util::{lexer::Token, lalrpop_mod, ParseError};
 
 use crate::ast::TopLvl;
@@ -37,6 +37,30 @@ pub fn format_parse_error(
     }
 }
 
+fn emit_parse_error(error: ParseError<usize, Token<'_>, &str>, text: &str) {
+    let writer = StandardStream::stderr(ColorChoice::Always);
+    let config = codespan_reporting::term::Config::default();
+    let diagnostic = format_parse_error(&error);
+    
+    term::emit(
+        &mut writer.lock(),
+        &config,
+        &SimpleFile::new("emit_parse_error_file", text),
+        &diagnostic,
+    )
+    .unwrap();
+}
+
 pub fn parse(input: &str) -> Result<TopLvl, ParseError<usize, Token<'_>, &str>> {
     parser::TopLvlParser::new().parse(input)
+}
+
+pub fn parse_input_or_emit_error_and_exit(input: &str) -> TopLvl {
+    match parser::TopLvlParser::new().parse(input) {
+        Ok(ast) => ast,
+        Err(error) => {
+            emit_parse_error(error, input);
+            std::process::exit(1);
+        }
+    }
 }
