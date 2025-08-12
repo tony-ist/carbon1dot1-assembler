@@ -1,4 +1,5 @@
 pub mod assembler;
+pub mod assemble_source;
 pub mod ast;
 pub mod lower_labels;
 pub mod name_mangling;

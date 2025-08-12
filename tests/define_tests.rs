@@ -1,5 +1,5 @@
 use test_case::test_case;
-use carbon1dot1_assembler::assemble_source;
+use carbon1dot1_assembler::assemble_source::assemble_source;
 
 #[test_case("VALUE", 42 ; "simple name")]
 #[test_case("MAX_COUNT", 255 ; "with underscore in the middle")]
@@ -11,7 +11,7 @@ fn test_define_variable_names(var_name: &str, var_value: u8) {
         LIM r2 {var_name}
     "#);
     
-    let result = assemble_source(&source);
+    let result = assemble_source(&source).expect("Failed to assemble source");
     let expected = vec![0x79, var_value, 0x7A, var_value];
     assert_eq!(result, expected);
 }
@@ -31,7 +31,7 @@ fn test_define_different_value_formats(var_name: &str, var_literal: &str, expect
         LIM r1 {var_name}
     "#);
     
-    let result = assemble_source(&source);
+    let result = assemble_source(&source).expect("Failed to assemble source");
     let expected = vec![0x79, expected_value];
     assert_eq!(result, expected);
 }
