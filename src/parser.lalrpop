@@ -41,6 +41,8 @@ match {
     r"jid|JID",
     r"fls|FLS",
     r"(r|R)\d",
+    r"0x[0-9a-fA-F]+",
+    r"0b[01]+",
     r"\d+",
     r"\$\d",
     r"jmp|JMP",
@@ -128,6 +130,16 @@ Register: Operand = {
 }
 
 Immediate: Operand = {
+    r"0x[0-9a-fA-F]+" => {
+        let s = <>.to_string();
+        let val = u8::from_str_radix(&s[2..], 16).unwrap();
+        Operand::Immediate8(val)
+    },
+    r"0b[01]+" => {
+        let s = <>.to_string();
+        let val = u8::from_str_radix(&s[2..], 2).unwrap();
+        Operand::Immediate8(val)
+    },
     r"\d+" => Operand::Immediate8(<>.parse::<u8>().unwrap())
 }
 

@@ -37,4 +37,27 @@ fn test_define_different_value_formats(var_name: &str, var_literal: &str, expect
     assert_eq!(result, expected);
 }
 
+#[test]
+#[should_panic(expected = "redefinition of define")]
+fn test_define_cannot_be_redefined() {
+    let source = r#"
+        @define define 42
+        LIM r1 @define
+    "#;
+    
+    assemble_source_or_emit_error_and_exit(&source);
+}
+
+#[test]
+#[should_panic(expected = "double definition of 'name1'")]
+fn test_double_define_errors() {
+    let source = r#"
+        @define name1 42
+        @define name1 43
+        LIM r1 @name1
+    "#;
+    
+    assemble_source_or_emit_error_and_exit(&source);
+}
+
 // TODO: Make tests more narrow by rewriting to test preprocessor.rs instead of assemble_source.rs

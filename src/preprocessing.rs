@@ -17,8 +17,15 @@ pub fn preprocess_defines(source: &str) -> String {
         return source.to_string();
     }
 
-    // rewrite this code to replace any @name into value
-    let at_ident_re = Regex::new(r"@([A-Za-z_][A-Za-z0-9_]*)").unwrap();
+    // todos:
+
+    // remove all define lines
+
+    // replace all @name or @{name} into value for all defs
+
+    // remove code under this line
+
+    let at_ident_re = Regex::new(r"@\{([A-Za-z_][A-Za-z0-9_]*)\}|@([A-Za-z_][A-Za-z0-9_]*)").unwrap();
 
     let mut out = String::with_capacity(source.len());
     for line in source.lines() {
