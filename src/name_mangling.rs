@@ -1,13 +1,11 @@
 use crate::{
     ast::{FuncBody, Operand, TopLvl},
-    instr,
 };
 
 /// this function lowers functions & correctly mangles the identifiers
 pub fn mangle(module: TopLvl) -> Vec<FuncBody> {
     let mut ret = Vec::new();
     ret.extend(module.instrs);
-    ret.push(FuncBody::Instruction(instr!(Hlt; vec![])));
     for (name, func) in module.functions {
         ret.push(FuncBody::Label(name.clone()));
         for instr in func {

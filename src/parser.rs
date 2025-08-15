@@ -51,10 +51,6 @@ fn emit_parse_error(error: ParseError<usize, Token<'_>, &str>, text: &str) {
     .unwrap();
 }
 
-pub fn parse(input: &str) -> Result<TopLvl, ParseError<usize, Token<'_>, &str>> {
-    parser::TopLvlParser::new().parse(input)
-}
-
 pub fn parse_input_or_emit_error_and_exit(input: &str) -> TopLvl {
     match parser::TopLvlParser::new().parse(input) {
         Ok(ast) => ast,
