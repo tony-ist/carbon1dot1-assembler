@@ -9,10 +9,11 @@ fn test_define_variable_names(var_name: &str, var_value: u8) {
         @define {var_name} {var_value}
         LIM r1 @{var_name}
         LIM r2 @{var_name}
+        HLT
     "#);
     
     let result = assemble_source_or_emit_error_and_exit(&source);
-    let expected = vec![0x79, var_value, 0x7A, var_value];
+    let expected = vec![0x79, var_value, 0x7A, var_value, 0xF0];
     assert_eq!(result, expected);
 }
 
@@ -35,3 +36,5 @@ fn test_define_different_value_formats(var_name: &str, var_literal: &str, expect
     let expected = vec![0x79, expected_value];
     assert_eq!(result, expected);
 }
+
+// TODO: Make tests more narrow by rewriting to test preprocessor.rs instead of assemble_source.rs
