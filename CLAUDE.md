@@ -52,3 +52,7 @@ The custom instruction set includes ~32 opcodes across categories:
 - Uses LALRPOP build script (`build.rs`) to generate parser from grammar
 - Parser regeneration happens automatically on grammar changes
 - Binary output format is 8-bit instruction encoding written as binary strings
+
+
+## Important notes
+- You MUST NOT leave comments in your code

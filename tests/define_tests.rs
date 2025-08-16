@@ -38,6 +38,18 @@ fn test_define_different_value_formats(var_name: &str, var_literal: &str, expect
 }
 
 #[test]
+fn test_define_after_assembly() {
+    let source = r#"
+        LIM r1 @name
+        @define name 42
+    "#;
+    
+    let result = assemble_source_or_emit_error_and_exit(&source);
+    let expected = vec![0x79, 42];
+    assert_eq!(result, expected);
+}
+
+#[test]
 #[should_panic(expected = "redefinition of define")]
 fn test_define_cannot_be_redefined() {
     let source = r#"
