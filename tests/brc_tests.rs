@@ -20,7 +20,7 @@ fn create_brc_jmp_instruction(address: u16) -> Vec<FuncBody> {
 #[test_case(0x4040, vec![0xB0, 0x80, 0x40] ; "BRC JMP to address 0x4040 (mid-range test)")]
 fn test_brc_valid_15bit_addresses(address: u16, expected: Vec<u8>) {
     let instructions = create_brc_jmp_instruction(address);
-    let result = assemble(instructions);
+    let result = assemble(&instructions);
     assert_eq!(result, expected);
 }
 
@@ -33,7 +33,7 @@ fn test_brc_invalid_addresses_should_error(address: u16) {
     let instructions = create_brc_jmp_instruction(address);
     
     let result = std::panic::catch_unwind(|| {
-        assemble(instructions)
+        assemble(&instructions)
     });
     assert!(result.is_err(), "Expected error for invalid address {:#06x} but assembly succeeded", address);
 }

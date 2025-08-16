@@ -46,7 +46,7 @@ fn create_instruction(opcode: Opcode, operands: Vec<Operand>) -> Vec<FuncBody> {
 #[test_case(Opcode::Fls, vec![], 0xF8 ; "FLS")]
 fn test_single_byte_instruction_encoding(opcode: Opcode, operands: Vec<Operand>, expected: u8) {
     let instructions = create_instruction(opcode, operands);
-    let result = assemble(instructions);
+    let result = assemble(&instructions);
     assert_eq!(result.len(), 1);
     assert_eq!(result[0], expected);
 }
@@ -69,7 +69,7 @@ fn test_single_byte_instruction_encoding(opcode: Opcode, operands: Vec<Operand>,
 #[test_case(Opcode::Bsr, 7, 0x6F ; "BSR 7")]
 fn test_barrel_shift_encoding(opcode: Opcode, shift_amount: u8, expected: u8) {
     let instructions = create_instruction(opcode, vec![Operand::Immediate8(shift_amount)]);
-    let result = assemble(instructions);
+    let result = assemble(&instructions);
     assert_eq!(result.len(), 1);
     assert_eq!(result[0], expected);
 }
@@ -87,7 +87,7 @@ fn test_lim_instruction_encoding(register: u8, immediate: u8, expected: Vec<u8>)
         Opcode::Lim,
         vec![Operand::Register(register), Operand::Immediate8(immediate)]
     );
-    let result = assemble(instructions);
+    let result = assemble(&instructions);
     assert_eq!(result, expected);
 }
 
@@ -104,7 +104,7 @@ fn test_psi_instruction_encoding(port: u8, immediate: u8, expected: Vec<u8>) {
         Opcode::Psi,
         vec![Operand::Address(port), Operand::Immediate8(immediate)]
     );
-    let result = assemble(instructions);
+    let result = assemble(&instructions);
     assert_eq!(result, expected);
 }
 
@@ -123,6 +123,6 @@ fn test_branch_instruction_encoding(condition: Condition, address: u8, expected:
         Opcode::Brc,
         vec![Operand::Condition(condition), Operand::Immediate16(address as u16)]
     );
-    let result = assemble(instructions);
+    let result = assemble(&instructions);
     assert_eq!(result, expected);
 }
