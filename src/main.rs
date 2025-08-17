@@ -1,8 +1,6 @@
 use std::{io::Write};
 
-use carbon1dot1_assembler::{
-    assemble_source::assemble_source_or_emit_error_and_exit,
-};
+use carbon1dot1_assembler::assembler::assemble_source_or_emit_error_and_exit;
 use clap::Parser;
 
 #[derive(Parser)]

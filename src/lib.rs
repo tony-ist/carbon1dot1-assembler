@@ -1,5 +1,5 @@
 pub mod assembler;
-pub mod assemble_source;
+pub mod disassemble;
 pub mod ast;
 pub mod preprocessing;
 pub mod lower_labels;

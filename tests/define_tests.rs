@@ -1,4 +1,4 @@
-use carbon1dot1_assembler::assemble_source::assemble_source_or_emit_error_and_exit;
+use carbon1dot1_assembler::assembler::assemble_source_or_emit_error_and_exit;
 use test_case::test_case;
 
 #[test_case("VALUE", 42 ; "simple name")]
