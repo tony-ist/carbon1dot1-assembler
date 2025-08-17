@@ -6,7 +6,7 @@ pub fn disassemble(func_bodies: &Vec<FuncBody>) -> Vec<String> {
     for func_body in func_bodies {
         let disassembled = disassemble_func_body(func_body);
         // todo: support programs up to 32KiB
-        result.push(format!("{:04x}: {}", offset, disassembled));
+        result.push(format!("{:04X}: {}", offset, disassembled));
         offset += assemble_func_body(func_body).len();
     }
     result
