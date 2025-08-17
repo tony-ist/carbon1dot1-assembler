@@ -1,6 +1,6 @@
 use std::{io::Write};
 
-use carbon1dot1_assembler::assembler::assemble_source_or_emit_error_and_exit;
+use carbon1dot1_assembler::{assembler::assemble_source_or_emit_error_and_exit, disassemble::disassemble_source_or_emit_error_and_exit};
 use clap::Parser;
 
 #[derive(Parser)]
@@ -9,13 +9,15 @@ struct Args {
     input_file: String,
     #[clap(short, long, default_value_t=String::from("./out.bin"))]
     output_file: String,
+    #[clap(short, long, required = false)]
+    disasm_file: Option<String>,
 }
 
 fn main() {
     let args = Args::parse();
-    let text = std::fs::read_to_string(&args.input_file).expect("failed to read the input file");
+    let text = std::fs::read_to_string(&args.input_file).unwrap();
     let assembled = assemble_source_or_emit_error_and_exit(&text);
-    let mut f = std::fs::File::create(&args.output_file).expect("Failed to open the output file.");
+    let mut f = std::fs::File::create(&args.output_file).unwrap();
     f.write_all(
         &assembled
             .iter()
@@ -25,5 +27,12 @@ fn main() {
             .as_bytes(),
     )
     .unwrap();
+    
+    if let Some(disasm_file) = args.disasm_file {
+        let mut f = std::fs::File::create(&disasm_file).unwrap();
+        let disassembly = disassemble_source_or_emit_error_and_exit(&text);
+        f.write_all(disassembly.join("\n").as_bytes()).unwrap();
+    }
+
     //romgen::generate_schem(&mut f, &assembled, 256).unwrap();
 }
