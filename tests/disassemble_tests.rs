@@ -25,9 +25,9 @@ use carbon1dot1_assembler::{ast::{Condition, FuncBody, Instruction, Opcode, Oper
 #[test_case(Opcode::Pld, vec![Operand::Address(3)], "pld $3" ; "PLD $3")]
 #[test_case(Opcode::Hlt, vec![], "hlt" ; "HLT")]
 #[test_case(Opcode::Fls, vec![], "fls" ; "FLS")]
-#[test_case(Opcode::Lim, vec![Operand::Register(1), Operand::Immediate8(42)], "lim r1 42" ; "LIM R1, 42")]
-#[test_case(Opcode::Lim, vec![Operand::Register(0), Operand::Immediate8(255)], "lim r0 255" ; "LIM R0, 255")]
-#[test_case(Opcode::Psi, vec![Operand::Address(3), Operand::Immediate8(0xFF)], "psi $3 255" ; "PSI $3, 255")]
+#[test_case(Opcode::Lim, vec![Operand::Register(1), Operand::Immediate8(42)], "lim r1 0x2a" ; "LIM R1, 42")]
+#[test_case(Opcode::Lim, vec![Operand::Register(0), Operand::Immediate8(255)], "lim r0 0xff" ; "LIM R0, 255")]
+#[test_case(Opcode::Psi, vec![Operand::Address(3), Operand::Immediate8(0xFF)], "psi $3 0xff" ; "PSI $3, 255")]
 #[test_case(Opcode::Brc, vec![Operand::Condition(Condition::Jmp), Operand::Immediate16(0x1234)], "brc jmp 0x1234" ; "BRC JMP 0x1234")]
 #[test_case(Opcode::Brc, vec![Operand::Condition(Condition::Even), Operand::Immediate16(0x5678)], "brc even 0x5678" ; "BRC EVEN 0x5678")]
 #[test_case(Opcode::Brc, vec![Operand::Condition(Condition::Eq), Operand::Immediate16(0x9ABC)], "brc eq 0x9abc" ; "BRC EQ 0x9ABC")]
@@ -59,6 +59,6 @@ fn test_disassemble_multiline() {
         })
     ];
     let result = disassemble(&func_bodies);
-    let expected = vec!["0000: lim r1 42", "0002: brc jmp 0x1234", "0005: hlt"];
+    let expected = vec!["0000: lim r1 0x2a", "0002: brc jmp 0x1234", "0005: hlt"];
     assert_eq!(result, expected);
 }
