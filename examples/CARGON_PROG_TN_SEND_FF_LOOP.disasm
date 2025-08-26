@@ -1,0 +1,16 @@
+0000: lim r0 0x1
+0002: pst $1
+0003: lim r0 0xff
+0005: pst $2
+0006: lim r0 0x2a
+0008: pst $3
+0009: pld $1
+000A: lim r1 0x1
+000C: and r1
+000D: brc eq 0x9
+0010: lim r0 0x4
+0012: pst $1
+0013: pst $0
+0014: pld $2
+0015: pst $4
+0016: hlt

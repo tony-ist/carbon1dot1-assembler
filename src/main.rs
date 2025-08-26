@@ -1,6 +1,6 @@
 use std::{io::Write};
 
-use carbon1dot1_assembler::{assembler::assemble_source_or_emit_error_and_exit, disassemble::disassemble_source_or_emit_error_and_exit};
+use carbon1dot1_assembler::{assembler::assemble_source_or_emit_error_and_exit, disassemble::disassemble_source_or_emit_error_and_exit, romgen};
 use clap::Parser;
 
 #[derive(Parser)]
@@ -11,6 +11,8 @@ struct Args {
     output_file: String,
     #[clap(short, long, required = false)]
     disasm_file: Option<String>,
+    #[clap(short, long, required = false)]
+    schem_file: Option<String>,
 }
 
 fn main() {
@@ -33,6 +35,9 @@ fn main() {
         let disassembly = disassemble_source_or_emit_error_and_exit(&text);
         f.write_all(disassembly.join("\n").as_bytes()).unwrap();
     }
-
-    //romgen::generate_schem(&mut f, &assembled, 256).unwrap();
+    
+    if let Some(schem_file) = args.schem_file {
+        let mut f = std::fs::File::create(&schem_file).unwrap();
+        romgen::generate_schem(&mut f, &assembled, 256).unwrap();
+    }
 }
