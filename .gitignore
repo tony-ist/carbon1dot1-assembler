@@ -1,4 +1,5 @@
 /target
 examples/*.schem
+examples/small_tests/
 .claude/settings.local.json
 claude-docs/
