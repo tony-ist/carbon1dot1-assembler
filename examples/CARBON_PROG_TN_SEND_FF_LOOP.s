@@ -4,8 +4,7 @@
 // Set RECIPIENT_ADDR to this CPU's address to send packets to itself.
 // PST commands for TickNet should be followed by 0+ NOPs to wait for the operation to complete, refer to the TN documentation for more information
 
-// todo set back to 42 after node v1.1.1 is fixed
-@define RECIPIENT_ADDR 5
+@define RECIPIENT_ADDR 42
 @define NUMBER_TO_SEND 0xFF
 @define MAX_ITERATIONS 255
 @define START_ITERATION 0
