@@ -11,9 +11,7 @@
 // Output the received number to this port for transparency
 @define OUTPUT_PORT $4
 
-// TickNet <-> Carbon Protocol follows
-// Send anything to TN_NEXT_DATA_PORT to get next data byte 
-@define TN_NEXT_DATA_PORT $0
+// TickNet <-> Carbon Protocol
 // Send TN command to this port
 @define TN_COMMAND_PORT $1
 // Send data to this port to include data in the packet
@@ -53,7 +51,7 @@ lim r0 @RECIPIENT_ADDR
 pst @TN_RECIPIENT_ADDR_PORT // Send the number to the recipient
 nop 
 nop 
-nop // Wait 8 + 24 = 32 redstone ticks for the packet to be sent
+nop // Wait 8 + 24 = 32 (>25) redstone ticks for the packet to be sent
 
 .receive_loop
 pld @TN_STATUS_PORT
@@ -68,7 +66,7 @@ nop
 nop
 nop
 nop
-nop // Wait for 8 + 48 = 56 ticks for the received data to be ready
+nop // Wait for 8 + 48 = 56 (>55) ticks for the received data to be ready
 
 pld @TN_READ_DATA_PORT // Read data from input port into accumulator
 pst @OUTPUT_PORT // Output the received number
