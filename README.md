@@ -176,5 +176,5 @@ The BRC instruction is always 3 bytes:
 
 ## Address Space
 
-- **16-bit addressing**: Used for branch instructions with page/offset format
+- **15-bit addressing**: Used for branch instructions with page/offset format
 - **Memory Layout**: Harvard architecture with separate instruction and data spaces

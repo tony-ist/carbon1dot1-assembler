@@ -170,24 +170,31 @@ nop // Wait for 8 + 48 = 56 (>55) ticks for the received data to be ready
 // Test 3 assertions 24-1
 lim r1 @TN_MAX_BYTES_PER_PACKET
 .test_3_assert_loop
+    // Test 3 assert length
     pld @TN_LENGTH_PORT
-    cmp r1
-    brc neq .test_3_error_length // assert r1 == length
+    cmp r1 // r0 is the received length (could be wrong), r1 is the iteration number (from 24 to 1)
+    brc eq .test_3_assert_data // assert r1 == length
+
+    // Test 3 error length code [r0] (for example 0b1001_1000 for iteration 1 if length is wrong)
+    .test_3_error_length
+    pst @MISMATCHED_VALUE_PORT
+    rld r1
+    pst @ERROR_CODE_PORT
+    lim r0 3
+    pst @EXIT_CODE_PORT    
+    hlt
 
     .test_3_assert_data
     pld @TN_READ_DATA_PORT // Read data from input port into accumulator
     cmp r1
-    rst r2 // Save the wrong data byte received for debugging
-    brc neq .test_3_error_common // assert r1 == data
+    brc eq .test_3_assert_loop_end // assert r1 == data
 
-    .test_3_error_length
-    rst r2 // Save the wrong data byte received for debugging
+    // Test 3 error code 0b1000_0000 + [r0] (for example 0b1001_1000 for iteration 1 if data is wrong)
+    .test_3_error_data
+    pst @MISMATCHED_VALUE_PORT
+    rld r1
     lim r3 0b1000_0000
-    or r3 // set bit 7 of error code in acc to 1
-
-    // Test 3 error code 0b[0/1]000_0000 + [r0] (for example 0b1001_1000 for iteration 1 if length is wrong)
-    .test_3_error_common
-    // TODO: Store mismatched length in register r2
+    or r3 // set MSB of error code in acc to 1 to indicate data mismatch
     pst @ERROR_CODE_PORT
     lim r0 3
     pst @EXIT_CODE_PORT
@@ -199,15 +206,18 @@ lim r1 @TN_MAX_BYTES_PER_PACKET
     cmp r1
     brc neq .test_3_assert_loop
 
-pld @TN_LENGTH_PORT
-lim r1 @TN_MAX_BYTES_PER_PACKET
-
 // ** Test 4: Send and receive the maximum amount of empty packets the node can hold ** //
 // Node V1.1.5 can store 64 bytes of received data
 // 1 byte for sender address + 1 byte for length = 2 bytes per packet
 // 64 bytes / 2 bytes per packet = 32 packets
 
+lim r0 4
+pst @CURRENT_TEST_PORT
+
 // ** Test 5: Turn the node off and on repeatedly ** //
+
+lim r0 5
+pst @CURRENT_TEST_PORT
 
 // ** End of test suite ** //
 
