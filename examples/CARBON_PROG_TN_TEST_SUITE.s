@@ -9,6 +9,10 @@
 @define EXIT_CODE_PORT $4
 // Holds the error code of a concrete test that failed
 @define ERROR_CODE_PORT $5
+// Holds the received value from TN Node that was discovered to be wrong during comparison
+@define MISMATCHED_VALUE_PORT $6
+// Holds the number of the currently running test (from 1 to N), 0 is setup
+@define CURRENT_TEST_PORT $7
 
 // ** TickNet <-> Carbon Protocol ** //
 // Send TN command to this port
@@ -43,7 +47,8 @@
 
 lim r0 0
 pst @EXIT_CODE_PORT
-pst @ERROR_CODE_PORT // Clear the exit and error code ports for transparency
+pst @ERROR_CODE_PORT
+pst @CURRENT_TEST_PORT // Clear the ports for transparency
 
 lim r0 @TN_COMMAND_ON
 pst @TN_COMMAND_PORT // Turn the TN interface on
@@ -51,6 +56,8 @@ pst @TN_COMMAND_PORT // Turn the TN interface on
 // brc jmp .test_1_start // Uncomment to jump to the required test immediately
 
 // ** Test 1: Send a packet with 1 byte to self ** //
+lim r0 1
+pst @CURRENT_TEST_PORT
 
 @define TEST_1_NUMBER_TO_SEND 255
 .test_1_start
@@ -62,11 +69,11 @@ nop
 nop 
 nop // Wait 8 + 24 = 32 (>25) redstone ticks for the packet to be sent
 
-.receive_loop
+.test_1_receive_loop
 pld @TN_STATUS_PORT
 lim r1 @TN_MORE_PACKETS_BIT
 and r1
-brc eq .receive_loop // If more packets bit is not set, wait for a packet to be received
+brc eq .test_1_receive_loop // If more packets bit is not set, wait for a packet to be received
 
 lim r0 @TN_COMMAND_NEXT_PACKET
 pst @TN_COMMAND_PORT // Next packet command
@@ -77,7 +84,7 @@ nop
 nop
 nop // Wait for 8 + 48 = 56 (>55) ticks for the received data to be ready
 
-// Test 1 assertion 1
+// Test 1 assertion 1 length
 pld @TN_LENGTH_PORT
 lim r1 1
 cmp r1
@@ -89,11 +96,12 @@ pst @ERROR_CODE_PORT
 pst @EXIT_CODE_PORT
 hlt
 
+// Test 1 assertion 2 data
 .test_1_assert_2
 pld @TN_READ_DATA_PORT // Read data from input port into accumulator
 lim r1 @TEST_1_NUMBER_TO_SEND
 cmp r1
-brc eq .test_2_start // Test 1 passed
+brc eq .test_1_assert_3 // Test 1 passed
 
 // Test 1 error 2
 lim r0 2
@@ -102,6 +110,7 @@ lim r0 1
 pst @EXIT_CODE_PORT
 hlt
 
+// Test 1 assertion 3 length
 .test_1_assert_3
 pld @TN_LENGTH_PORT
 lim r1 0
@@ -118,9 +127,80 @@ hlt
 // ** Test 2: Send and receive an empty packet ** //
 
 .test_2_start
-nop
+lim r0 2
+pst @CURRENT_TEST_PORT
 
 // ** Test 3: Send and receive a packet with maximum number of bytes ** //
+
+.test_3_start
+lim r0 3
+pst @CURRENT_TEST_PORT
+
+lim r1 @TN_MAX_BYTES_PER_PACKET
+
+.test_3_loop // Fill the packet with maximum number of bytes
+    rst r1
+    pst @TN_WRITE_DATA_PORT
+    dec r1
+    lim r0 0
+    cmp r1
+    brc neq .test_3_loop
+
+lim r0 @RECIPIENT_ADDR
+pst @TN_RECIPIENT_ADDR_PORT // Send the number to the recipient
+nop 
+nop 
+nop // Wait 8 + 24 = 32 (>25) redstone ticks for the packet to be sent
+
+.test_3_receive_loop
+    pld @TN_STATUS_PORT
+    lim r1 @TN_MORE_PACKETS_BIT
+    and r1
+    brc eq .test_3_receive_loop // If more packets bit is not set, wait for a packet to be received
+
+lim r0 @TN_COMMAND_NEXT_PACKET
+pst @TN_COMMAND_PORT // Next packet command
+nop
+nop
+nop
+nop
+nop
+nop // Wait for 8 + 48 = 56 (>55) ticks for the received data to be ready
+
+// Test 3 assertions 24-1
+lim r1 @TN_MAX_BYTES_PER_PACKET
+.test_3_assert_loop
+    pld @TN_LENGTH_PORT
+    cmp r1
+    brc neq .test_3_error_length // assert r1 == length
+
+    .test_3_assert_data
+    pld @TN_READ_DATA_PORT // Read data from input port into accumulator
+    cmp r1
+    rst r2 // Save the wrong data byte received for debugging
+    brc neq .test_3_error_common // assert r1 == data
+
+    .test_3_error_length
+    rst r2 // Save the wrong data byte received for debugging
+    lim r3 0b1000_0000
+    or r3 // set bit 7 of error code in acc to 1
+
+    // Test 3 error code 0b[0/1]000_0000 + [r0] (for example 0b1001_1000 for iteration 1 if length is wrong)
+    .test_3_error_common
+    // TODO: Store mismatched length in register r2
+    pst @ERROR_CODE_PORT
+    lim r0 3
+    pst @EXIT_CODE_PORT
+    hlt
+
+    .test_3_assert_loop_end
+    dec r1
+    lim r0 0
+    cmp r1
+    brc neq .test_3_assert_loop
+
+pld @TN_LENGTH_PORT
+lim r1 @TN_MAX_BYTES_PER_PACKET
 
 // ** Test 4: Send and receive the maximum amount of empty packets the node can hold ** //
 // Node V1.1.5 can store 64 bytes of received data

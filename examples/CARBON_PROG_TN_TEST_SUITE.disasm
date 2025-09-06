@@ -1,0 +1,56 @@
+0000: lim r0 0x0
+0002: pst $4
+0003: pst $5
+0004: lim r0 0x1
+0006: pst $1
+0007: lim r0 0xff
+0009: pst $2
+000A: lim r0 0x2a
+000C: pst $3
+000D: nop
+000E: nop
+000F: nop
+0010: pld $1
+0011: lim r1 0x1
+0013: and r1
+0014: brc eq 0x10
+0017: lim r0 0x4
+0019: pst $1
+001A: nop
+001B: nop
+001C: nop
+001D: nop
+001E: nop
+001F: nop
+0020: pld $0
+0021: lim r1 0x1
+0023: cmp r1
+0024: brc eq 0x2c
+0027: lim r0 0x1
+0029: pst $5
+002A: pst $4
+002B: hlt
+002C: pld $2
+002D: lim r1 0xff
+002F: cmp r1
+0030: brc eq 0x48
+0033: lim r0 0x2
+0035: pst $5
+0036: lim r0 0x1
+0038: pst $4
+0039: hlt
+003A: pld $0
+003B: lim r1 0x0
+003D: cmp r1
+003E: brc eq 0x48
+0041: lim r0 0x3
+0043: pst $5
+0044: lim r0 0x1
+0046: pst $4
+0047: hlt
+0048: nop
+0049: lim r0 0x2
+004B: pst $1
+004C: lim r0 0xff
+004E: pst $4
+004F: hlt
