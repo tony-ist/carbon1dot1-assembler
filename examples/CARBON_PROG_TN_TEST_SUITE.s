@@ -45,15 +45,17 @@
 // Maximum payload length per packet
 @define TN_MAX_BYTES_PER_PACKET 24
 
+// Clear the ports for transparency
 lim r0 0
 pst @EXIT_CODE_PORT
 pst @ERROR_CODE_PORT
-pst @CURRENT_TEST_PORT // Clear the ports for transparency
+pst @MISMATCHED_VALUE_PORT
+pst @CURRENT_TEST_PORT 
 
 lim r0 @TN_COMMAND_ON
 pst @TN_COMMAND_PORT // Turn the TN interface on
 
-// brc jmp .test_1_start // Uncomment to jump to the required test immediately
+brc jmp .test_3_start // Uncomment to jump to the required test immediately
 
 // ** Test 1: Send a packet with 1 byte to self ** //
 lim r0 1
@@ -88,41 +90,41 @@ nop // Wait for 8 + 48 = 56 (>55) ticks for the received data to be ready
 pld @TN_LENGTH_PORT
 lim r1 1
 cmp r1
-brc eq .test_1_assert_2 // Remaining payload length is 1
+brc eq .test_1_assert_2 // Assert remaining payload length is 1
 
 // Test 1 error 1
 lim r0 1
 pst @ERROR_CODE_PORT
 pst @EXIT_CODE_PORT
-hlt
+brc jmp .off
 
 // Test 1 assertion 2 data
 .test_1_assert_2
 pld @TN_READ_DATA_PORT // Read data from input port into accumulator
 lim r1 @TEST_1_NUMBER_TO_SEND
 cmp r1
-brc eq .test_1_assert_3 // Test 1 passed
+brc eq .test_1_assert_3 // Assert received data = sent data
 
 // Test 1 error 2
 lim r0 2
 pst @ERROR_CODE_PORT
 lim r0 1
 pst @EXIT_CODE_PORT
-hlt
+brc jmp .off
 
 // Test 1 assertion 3 length
 .test_1_assert_3
 pld @TN_LENGTH_PORT
 lim r1 0
 cmp r1
-brc eq .test_2_start // Remaining payload length is 0
+brc eq .test_2_start // Assert remaining payload length is 0
 
 // Test 1 error 3
 lim r0 3
 pst @ERROR_CODE_PORT
 lim r0 1
 pst @EXIT_CODE_PORT
-hlt
+brc jmp .off
 
 // ** Test 2: Send and receive an empty packet ** //
 
@@ -139,7 +141,7 @@ pst @CURRENT_TEST_PORT
 lim r1 @TN_MAX_BYTES_PER_PACKET
 
 .test_3_loop // Fill the packet with maximum number of bytes
-    rst r1
+    rld r1
     pst @TN_WRITE_DATA_PORT
     dec r1
     lim r0 0
@@ -182,7 +184,7 @@ lim r1 @TN_MAX_BYTES_PER_PACKET
     pst @ERROR_CODE_PORT
     lim r0 3
     pst @EXIT_CODE_PORT    
-    hlt
+    brc jmp .off
 
     .test_3_assert_data
     pld @TN_READ_DATA_PORT // Read data from input port into accumulator
@@ -193,12 +195,12 @@ lim r1 @TN_MAX_BYTES_PER_PACKET
     .test_3_error_data
     pst @MISMATCHED_VALUE_PORT
     rld r1
-    lim r3 0b1000_0000
-    or r3 // set MSB of error code in acc to 1 to indicate data mismatch
+    lim r3 0x80
+    bor r3 // set MSB of error code in acc to 1 to indicate data mismatch
     pst @ERROR_CODE_PORT
     lim r0 3
     pst @EXIT_CODE_PORT
-    hlt
+    brc jmp .off
 
     .test_3_assert_loop_end
     dec r1
@@ -221,11 +223,10 @@ pst @CURRENT_TEST_PORT
 
 // ** End of test suite ** //
 
-lim r0 @TN_COMMAND_OFF
-pst @TN_COMMAND_PORT // Turn the TN interface off
-
 lim r0 @ALL_TESTS_PASSED_CODE
 pst @EXIT_CODE_PORT
 
-.halt 
+.off 
+lim r0 @TN_COMMAND_OFF
+pst @TN_COMMAND_PORT // Turn the TN interface off
 hlt

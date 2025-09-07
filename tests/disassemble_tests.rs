@@ -59,6 +59,6 @@ fn test_disassemble_multiline() {
         })
     ];
     let result = disassemble(&func_bodies);
-    let expected = vec!["0000: lim r1 0x2a", "0002: brc jmp 0x1234", "0005: hlt"];
+    let expected = vec!["00 00: lim r1 0x2a", "00 02: brc jmp 0x1234", "00 05: hlt"];
     assert_eq!(result, expected);
 }
