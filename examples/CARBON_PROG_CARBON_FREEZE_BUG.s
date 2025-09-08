@@ -1,4 +1,4 @@
-// This program tests that TickNet Node functions correctly in edge cases
+// This program halts at line 150 branch at address 0x73 for some reason I don't know why.
 
 // Address of the node that is connected to the CPU
 @define RECIPIENT_ADDR 42
@@ -43,7 +43,8 @@
 @define TN_ONLINE_BIT 2
 
 // Maximum payload length per packet
-@define TN_MAX_BYTES_PER_PACKET 24
+// todo change back to 24
+@define TN_MAX_BYTES_PER_PACKET 2
 
 // Clear the ports for transparency
 lim r0 0
@@ -146,7 +147,7 @@ lim r1 @TN_MAX_BYTES_PER_PACKET
     dec r1
     lim r0 0
     cmp r1
-    brc neq .test_3_loop
+    brc neq .test_3_loop // Program halts here at some reason, investigate
 
 lim r0 @RECIPIENT_ADDR
 pst @TN_RECIPIENT_ADDR_PORT // Send the number to the recipient
@@ -159,6 +160,10 @@ nop // Wait 8 + 24 = 32 (>25) redstone ticks for the packet to be sent
     lim r1 @TN_MORE_PACKETS_BIT
     and r1
     brc eq .test_3_receive_loop // If more packets bit is not set, wait for a packet to be received
+
+lim r0 255 // todo remove after testing
+pst @CURRENT_TEST_PORT // todo remove after testing, indicates that we are out of the loop
+hlt
 
 lim r0 @TN_COMMAND_NEXT_PACKET
 pst @TN_COMMAND_PORT // Next packet command
