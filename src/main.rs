@@ -9,9 +9,11 @@ struct Args {
     input_file: String,
     #[clap(short, long, default_value_t=String::from("./out.bin"))]
     output_file: String,
-    #[clap(short, long, required = false)]
+    #[clap(short, long, required = false, help="Also write disassembled code in disassembly file")]
     disasm_file: Option<String>,
-    #[clap(short, long, required = false)]
+    #[clap(short, long, required = false, default_value_t=false, help="Include binary in disassembly file")]
+    include_bin: bool,
+    #[clap(short, long, required = false, help="Write schem file (broken at the moment)")]
     schem_file: Option<String>,
 }
 
@@ -32,7 +34,7 @@ fn main() {
     
     if let Some(disasm_file) = args.disasm_file {
         let mut f = std::fs::File::create(&disasm_file).unwrap();
-        let disassembly = disassemble_source_or_emit_error_and_exit(&text);
+        let disassembly = disassemble_source_or_emit_error_and_exit(&text, args.include_bin);
         f.write_all(disassembly.join("\n").as_bytes()).unwrap();
     }
     

@@ -58,7 +58,28 @@ fn test_disassemble_multiline() {
             operands: vec![]
         })
     ];
-    let result = disassemble(&func_bodies);
+    let result = disassemble(&func_bodies, false);
     let expected = vec!["00 00: lim r1 0x2a", "00 02: brc jmp 0x1234", "00 05: hlt"];
+    assert_eq!(result, expected);
+}
+
+#[test]
+fn test_disassemble_include_binary_multiline() {
+    let func_bodies = vec![
+        FuncBody::Instruction(Instruction {
+            opcode: Opcode::Lim,
+            operands: vec![Operand::Register(1), Operand::Immediate8(42)]
+        }),
+        FuncBody::Instruction(Instruction {
+            opcode: Opcode::Brc,
+            operands: vec![Operand::Condition(Condition::Jmp), Operand::Immediate16(0x1234)]
+        }),
+        FuncBody::Instruction(Instruction {
+            opcode: Opcode::Hlt,
+            operands: vec![]
+        })
+    ];
+    let result = disassemble(&func_bodies, true);
+    let expected = vec!["00 00: (01111001 00101010) lim r1 0x2a", "00 02: (10110000 00100100 00110100) brc jmp 0x1234", "00 05: (11110000) hlt"];
     assert_eq!(result, expected);
 }
