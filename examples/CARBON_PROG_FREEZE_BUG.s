@@ -1,4 +1,4 @@
-// This program tests that TickNet Node functions correctly in edge cases
+// This is a carbon bug reproduction. Sometimes it halts at 0x73 which is branch instruction
 
 // Address of the node that is connected to the CPU
 @define RECIPIENT_ADDR 42
