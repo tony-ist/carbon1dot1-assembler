@@ -13,5 +13,9 @@ mcschem = "0.1.1"
 regex = "1.7.9"
 test-case = "3.3.1"
 
+[[bin]]
+name = "assembler"
+path = "src/main.rs"
+
 [build-dependencies]
 lalrpop = { version = "0.20.0", features = ["lexer"] }

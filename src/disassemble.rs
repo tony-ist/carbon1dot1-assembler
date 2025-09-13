@@ -6,7 +6,6 @@ pub fn disassemble(func_bodies: &Vec<FuncBody>, include_binary: bool) -> Vec<Str
     for func_body in func_bodies {
         let disassembled = disassemble_func_body(func_body);
         let assembled = assemble_func_body(func_body);
-        // todo: support programs up to 32KiB
         if include_binary {
             let binary = assembled.iter().map(|e| format!("{:08b}", e)).collect::<Vec<String>>().join(" ");
             result.push(format!("{}: ({}) {}", format_address(offset), binary, disassembled));

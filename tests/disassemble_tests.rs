@@ -28,14 +28,14 @@ use carbon1dot1_assembler::{ast::{Condition, FuncBody, Instruction, Opcode, Oper
 #[test_case(Opcode::Lim, vec![Operand::Register(1), Operand::Immediate8(42)], "lim r1 0x2a" ; "LIM R1, 42")]
 #[test_case(Opcode::Lim, vec![Operand::Register(0), Operand::Immediate8(255)], "lim r0 0xff" ; "LIM R0, 255")]
 #[test_case(Opcode::Psi, vec![Operand::Address(3), Operand::Immediate8(0xFF)], "psi $3 0xff" ; "PSI $3, 255")]
-#[test_case(Opcode::Brc, vec![Operand::Condition(Condition::Jmp), Operand::Immediate16(0x1234)], "brc jmp 0x1234" ; "BRC JMP 0x1234")]
-#[test_case(Opcode::Brc, vec![Operand::Condition(Condition::Even), Operand::Immediate16(0x5678)], "brc even 0x5678" ; "BRC EVEN 0x5678")]
-#[test_case(Opcode::Brc, vec![Operand::Condition(Condition::Eq), Operand::Immediate16(0x9ABC)], "brc eq 0x9abc" ; "BRC EQ 0x9ABC")]
-#[test_case(Opcode::Brc, vec![Operand::Condition(Condition::Neq), Operand::Immediate16(0xDEF0)], "brc neq 0xdef0" ; "BRC NEQ 0xDEF0")]
-#[test_case(Opcode::Brc, vec![Operand::Condition(Condition::Gt), Operand::Immediate16(0x1111)], "brc gt 0x1111" ; "BRC GT 0x1111")]
-#[test_case(Opcode::Brc, vec![Operand::Condition(Condition::Lt), Operand::Immediate16(0x2222)], "brc lt 0x2222" ; "BRC LT 0x2222")]
-#[test_case(Opcode::Brc, vec![Operand::Condition(Condition::Gteq), Operand::Immediate16(0x3333)], "brc gteq 0x3333" ; "BRC GTEQ 0x3333")]
-#[test_case(Opcode::Brc, vec![Operand::Condition(Condition::Lteq), Operand::Immediate16(0x4444)], "brc lteq 0x4444" ; "BRC LTEQ 0x4444")]
+#[test_case(Opcode::Brc, vec![Operand::Condition(Condition::Jmp), Operand::Immediate16(0x1234)], "brc jmp 0x24 0x34" ; "brc jmp 0x24 0x34")]
+#[test_case(Opcode::Brc, vec![Operand::Condition(Condition::Even), Operand::Immediate16(0x5678)], "brc even 0xAC 0x78" ; "brc even 0xAC 0x78")]
+#[test_case(Opcode::Brc, vec![Operand::Condition(Condition::Eq), Operand::Immediate16(0x5678)], "brc eq 0xAC 0x78" ; "brc eq 0xAC 0x78")]
+#[test_case(Opcode::Brc, vec![Operand::Condition(Condition::Neq), Operand::Immediate16(0x7FFF)], "brc neq 0xFF 0x7F" ; "brc neq 0xFF 0x7F")]
+#[test_case(Opcode::Brc, vec![Operand::Condition(Condition::Gt), Operand::Immediate16(0x1111)], "brc gt 0x22 0x11" ; "brc gt 0x22 0x11")]
+#[test_case(Opcode::Brc, vec![Operand::Condition(Condition::Lt), Operand::Immediate16(0x2222)], "brc lt 0x44 0x22" ; "brc lt 0x44 0x22")]
+#[test_case(Opcode::Brc, vec![Operand::Condition(Condition::Gteq), Operand::Immediate16(0x3333)], "brc gteq 0x66 0x33" ; "brc gteq 0x66 0x33")]
+#[test_case(Opcode::Brc, vec![Operand::Condition(Condition::Lteq), Operand::Immediate16(0x4444)], "brc lteq 0x88 0x44" ; "brc lteq 0x88 0x44")]
 fn test_disassemble_func_body(opcode: Opcode, operands: Vec<Operand>, expected: &str) {
     let func_body = FuncBody::Instruction(Instruction { opcode, operands });
     let result = disassemble_func_body(&func_body);

@@ -188,7 +188,7 @@ lim r1 @TN_MAX_BYTES_PER_PACKET
 
     .test_3_assert_data
     pld @TN_READ_DATA_PORT // Read data from input port into accumulator
-    cmp r1
+    cmp r1 // halted here
     brc eq .test_3_assert_loop_end // assert r1 == data
 
     // Test 3 error code 0b1000_0000 + [r0] (for example 0b1001_1000 for iteration 1 if data is wrong as first data byte is 24)

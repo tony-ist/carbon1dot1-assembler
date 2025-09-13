@@ -1,5 +1,7 @@
 use std::fmt::Display;
 
+use crate::util::{format_lower_pc, format_upper_pc};
+
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Opcode {
@@ -114,7 +116,7 @@ impl Display for Operand {
             Operand::Address(a) => write!(f, "${a}"),
             Operand::Condition(cond) => write!(f, "{cond}"),
             Operand::Immediate8(i) => write!(f, "{:#x}", i),
-            Operand::Immediate16(i) => write!(f, "{:#x}", i),
+            Operand::Immediate16(i) => write!(f, "{:#X} {:#X}", i >> 7, i & 0x7F),
             Operand::Register(r) => write!(f, "r{r}"),
             Operand::Label(l) => write!(f, "{l}"),
         }
