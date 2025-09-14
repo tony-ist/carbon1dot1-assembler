@@ -54,7 +54,7 @@ pub enum Condition {
 #[derive(Debug, Clone, PartialEq)]
 pub enum Operand {
     Immediate8(u8),
-    Immediate16(u16),
+    Immediate16(u16), // todo: brc should use 2 immediate8 instead
     Condition(Condition),
     Label(String),
     Register(u8),

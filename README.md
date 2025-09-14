@@ -178,3 +178,7 @@ The BRC instruction is always 3 bytes:
 
 - **15-bit addressing**: Used for branch instructions with page/offset format
 - **Memory Layout**: Harvard architecture with separate instruction and data spaces
+
+## TODO
+
+- Display labels in disassembly
