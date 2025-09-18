@@ -14,7 +14,7 @@ pub fn disassemble(func_bodies: &Vec<FuncBody>, include_binary: bool) -> Vec<Str
                 let border_offset = 0x7A;
                 let page_offset = offset & 0x7F;
                 if page_offset >= border_offset {
-                    eprintln!("Warning: Branch {} at {} is too close to new page start.", disassembled, format_address(offset));
+                    eprintln!("Warning: Branch '{}: {}' is too close to new page start.", format_address(offset), disassembled);
                 }
                 
                 let target_address: u16 = match instr.operands[1] {
@@ -27,7 +27,7 @@ pub fn disassemble(func_bodies: &Vec<FuncBody>, include_binary: bool) -> Vec<Str
                 let target_page_offset = target_address & 0x7F;
 
                 if brc_page_address != target_page_address && target_page_offset >= border_offset {
-                    eprintln!("Warning: Branch {} at {} jumps too close to new page start.", disassembled, format_address(offset));
+                    eprintln!("Warning: Branch '{}: {}' jumps too close to new page start.", format_address(offset), disassembled);
                 }
             }
         }

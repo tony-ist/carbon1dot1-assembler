@@ -43,7 +43,7 @@
 @define TN_ONLINE_BIT 2
 
 // Maximum payload length per packet
-@define TN_MAX_BYTES_PER_PACKET 24
+@define TN_MAX_BYTES_PER_PACKET 2
 
 // Clear the ports for transparency
 lim r0 0
@@ -168,6 +168,9 @@ nop
 nop
 nop
 nop // Wait for 8 + 48 = 56 (>55) ticks for the received data to be ready
+
+// Align to a new page
+nop
 
 // Test 3 assertions 24-1
 lim r1 @TN_MAX_BYTES_PER_PACKET
