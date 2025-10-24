@@ -1,5 +1,17 @@
 # Carbon1.1 Instruction Set Architecture (ISA)
 
+## Compile
+
+```bash
+cargo run -- -i -o examples/CARBON_PROG_TN_TEST_SUITE.txt -d examples/CARBON_PROG_TN_TEST_SUITE.disasm examples/CARBON_PROG_TN_TEST_SUITE.s
+```
+
+Txt file will contain binary but with ASCII 0 and 1 symbols to ease debugging.
+
+## Schem file
+
+Use [python script](https://github.com/tony-ist/carbon1dot1-schem) to create schem file. `romgen.rs` in this repo does not work yet, to be done.
+
 ## CPU Specifications
 
 - **Clock Speed**: 8 Ticks (1.25 Hz) 5-Stage Pipeline
